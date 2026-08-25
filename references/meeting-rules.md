@@ -1,25 +1,33 @@
-# 회의 규칙
+# Meeting Rules
 
-## 역할
+## Runtime modes
 
-- 진행자: 목표와 선택할 쟁점을 좁히고 최종 정리를 맡는다.
-- 제안자: 서로 다른 실행 방법과 기대 효과를 낸다.
-- 반대 검토자: 실패 가능성, 비용, 숨은 전제를 찾는다.
-- 사실 확인자: 결론을 바꿀 수 있는 사실만 확인한다.
-- 판단 담당자: 근거와 위험을 비교해 권고안을 만든다.
+- Solo is the default. The current session performs every selected role and uses its active model and reasoning effort.
+- Mix mode requires an explicit user request. Keep the current session as facilitator and decision maker; assign independent specialist reviews across both Codex and Claude when available.
+- Run mixed specialist reviews concurrently and keep their conclusions isolated until synthesis. Never simulate a provider or parallel work.
+- If either provider is unavailable, disclose that mix mode could not run fully and continue in solo mode unless the user requires both.
+- Keep exact model versions unpinned. Use each runtime's configured default model. When per-worker effort is available, use `medium` by default and `high` only for unresolved high-impact claims. User-specified bindings override these defaults.
 
-요청에 필요 없는 역할은 부르지 않는다. 단순 요청은 진행자만 처리하거나 회의 없이 바로 답한다. 선택지가 없으면 제안자를, 위험이 작으면 반대 검토자를, 변동 사실이 없으면 사실 확인자를 생략할 수 있다.
+## Roles
 
-## 진행
+- Facilitator (`진행자`): narrow the goal and decision, then own the final synthesis.
+- Proposer (`제안자`): produce materially different approaches and expected benefits.
+- Adversarial reviewer (`반대 검토자`): find failure modes, costs, and hidden assumptions.
+- Fact checker (`사실 확인자`): verify only facts that could change the decision.
+- Decision maker (`판단 담당자`): compare evidence and risk, then recommend an option.
 
-1. 진행자는 목표, 제약, 성공 조건, 현재 쟁점을 정리한다.
-2. 각 역할에는 전체 대화 대신 필요한 목표, 제약, 쟁점, 새 근거만 전달한다.
-3. 제안·반대 검토·사실 확인처럼 독립적인 일은 동시에 수행하고, 같은 주장이나 조사 요청은 합친다.
-4. 결과에서 주장, 근거, 반론, 전제를 구분해 중복을 없앤다.
-5. 판단 담당자는 사실·제안·위험의 성격에 맞는 기준으로 결론을 정리한다.
+Skip every role the request does not need. A simple request may use only the facilitator or no meeting. Omit the proposer when no alternatives are needed, the adversarial reviewer when risk is negligible, and the fact checker when no changeable fact can affect the result.
 
-## 재검토와 종료
+## Flow
 
-결론에 큰 영향을 주고 근거가 부족하거나 충돌하는 쟁점만 재검토한다. 재검토는 최대 두 번이며, 새 근거가 없거나 결론을 바꾸기 어려우면 더 진행하지 않는다.
+1. State the goal, constraints, success criteria, and current disputes.
+2. Give each role only the goal, constraints, relevant dispute, and new evidence instead of the full transcript.
+3. Run independent proposal, challenge, and verification work concurrently. Merge duplicate claims and research requests.
+4. Separate claims, evidence, objections, and assumptions, then deduplicate them.
+5. Apply the kind-specific decision rules and synthesize the result.
 
-중요한 주장이 채택·기각·추가 확인 필요 중 하나로 정리되고, 남은 작업이 결론을 바꾸지 못하면 회의를 끝낸다. 해소되지 않은 이견과 불확실성은 최종 정리에 남긴다.
+## Reopening and stopping
+
+Reopen only disputes with high decision impact and weak or conflicting evidence. Stop after two rounds, or earlier when no new evidence appears or the result is unlikely to change.
+
+End when material claims have a decision and remaining work cannot change the outcome. Carry unresolved disagreement and uncertainty into the final synthesis.
