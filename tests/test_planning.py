@@ -7,6 +7,8 @@ class ReviewPlanningTests(unittest.TestCase):
     def test_defaults_to_current_session_solo_without_provider_workers(self):
         result = plan_review({})
         self.assertEqual(result["mode"], "solo")
+        self.assertEqual(result["synthesizer"], "current-session")
+        self.assertEqual([worker["role"] for worker in result["workers"]].count("탐험가"), 3)
         self.assertTrue(all(worker["provider"] == "current-session" for worker in result["workers"]))
 
     def test_mix_requires_an_explicit_request(self):

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Idea evolution handoff",
+  "type": "object",
+  "required": ["ideas", "reviews", "outputs", "reality_checks"],
+  "properties": {
+    "ideas": { "type": "array", "minItems": 3, "items": { "type": "object", "required": ["id", "kind", "text"], "properties": { "id": { "type": "string", "minLength": 1 }, "kind": { "enum": ["original", "evolved", "hybrid", "mutation"] }, "text": { "type": "string", "minLength": 1 }, "parents": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }, "novelty": { "type": "string", "minLength": 1 } }, "additionalProperties": false } },
+    "reviews": { "type": "array", "items": { "type": "object", "required": ["idea_id", "keep", "but", "build"], "properties": { "idea_id": { "type": "string", "minLength": 1 }, "keep": { "type": "string", "minLength": 1 }, "but": { "type": "string", "minLength": 1 }, "build": { "type": "string", "minLength": 1 } }, "additionalProperties": false } },
+    "outputs": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "object", "required": ["kind", "idea_id"], "properties": { "kind": { "enum": ["best_evolved_original", "hybrid", "mutation"] }, "idea_id": { "type": "string", "minLength": 1 } }, "additionalProperties": false } },
+    "reality_checks": { "type": "array", "items": { "type": "object", "required": ["idea_id"], "properties": { "idea_id": { "type": "string", "minLength": 1 } }, "additionalProperties": false } }
+  },
+  "additionalProperties": false
+}

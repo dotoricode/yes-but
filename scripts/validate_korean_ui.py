@@ -9,12 +9,13 @@ from typing import Any
 
 FORBIDDEN_PATTERNS = {
     "영어 상태명": r"(?<![A-Za-z0-9_])(?:accepted|rejected|pending|running|completed|failed|needs[_ -]?confirmation)(?![A-Za-z0-9_])",
-    "영어 역할명": r"(?<![A-Za-z0-9_])(?:facilitator|proposer|devil'?s advocate|fact checker|decision maker)(?![A-Za-z0-9_])",
-    "내부 식별자": r"(?<![A-Za-z0-9_])(?:[A-Z]{1,8}[-_]?\d+|claim[_-]?\d+|[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12})(?![A-Za-z0-9_])",
+    "영어 역할명": r"(?<![A-Za-z0-9_])(?:facilitator|proposer|devil'?s advocate|fact checker|decision maker|explorer|synthesizer|reality reviewer)(?![A-Za-z0-9_])",
+    "내부 식별자": r"(?<![A-Za-z0-9_])(?:[A-Z]{1,8}[-_]?\d+|[ABC](?:안|[ -]?\d+)|[ABC](?:[ /,]+[ABC]){1,2}|claim[_-]?\d+|[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12})(?![A-Za-z0-9_])",
     "시스템 이벤트": r"(?<![A-Za-z0-9_])(?:task_started|task_completed|tool_call|model_response|state_changed)(?![A-Za-z0-9_])",
     "모델명": r"(?<![A-Za-z0-9_])(?:gpt-[A-Za-z0-9_.-]+|claude[-A-Za-z0-9_.]*|gemini[-A-Za-z0-9_.]*)(?![A-Za-z0-9_])",
     "내부 데이터 필드": r"(?<![A-Za-z0-9_])(?:changed_ids|claim_id|assessment|conflicting_evidence|decision)(?![A-Za-z0-9_])",
 }
+VISIBLE_ROLES = {"진행자", "탐험가", "합성자", "현실 검토자"}
 ENGLISH = re.compile(r"(?<![A-Za-z0-9_])[A-Za-z][A-Za-z0-9'_-]*(?![A-Za-z0-9_])")
 URL = re.compile(r"https?://[^\s]+", re.IGNORECASE)
 CODE = re.compile(r"`[^`]+`")
@@ -61,6 +62,8 @@ def validate(payload: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
     for index, message in enumerate(messages):
         if not isinstance(message, dict):
             raise ValueError("each message must be an object")
+        if "role" in message and message["role"] not in VISIBLE_ROLES:
+            raise ValueError("message role must be a natural Korean idea-evolution role")
         local_allowed = message.get("allowed_originals", [])
         if not isinstance(local_allowed, list):
             raise ValueError("message allowed_originals must be an array")

@@ -1,22 +1,21 @@
 ---
 name: yes-but
-description: Run a short, evidence-aware agent meeting for requests with competing options, material risk, or decision-changing facts. Show the user only natural Korean dialogue.
+description: Evolve competing ideas through constructive cross-development, then reality-check the strongest results. Show the user only natural Korean meeting dialogue.
 ---
 
 # yes-but
 
-Open a meeting only when options compete, risk or uncertainty is material, or a fact check could change the decision. Answer simple requests directly.
+Open an idea-evolution session only when a request benefits from alternatives, creative development, or a decision-changing reality check. Answer simple requests directly.
 
-Use solo mode by default: the current session performs every selected role without creating workers. Enter mix mode only when the user explicitly asks for it. In mix mode, keep the current session as facilitator and decision maker, use available Codex and Claude workers for independent specialist reviews, and rotate provider-to-role assignments between review rounds. Do not launch providers yourself; host adapters own that boundary.
+Use solo mode by default: the current session performs every role. Enter mix mode only when the user explicitly asks for it. In mix mode, keep the current session as facilitator and synthesizer, use available Codex and Claude explorers when host capabilities permit, and rotate provider-to-role assignments between rounds. Do not launch providers yourself; host adapters own that boundary.
 
-Express review intent only as `standard` or `deep`, never provider-specific effort names. If a requested mix provider is unavailable, disclose the limitation and use the supported fallback; do not substitute when the user requires both providers.
+1. The facilitator states the goal, constraints, and success criteria.
+2. Diverge with three materially distinct original ideas by default.
+3. Cross-develop every original with `keep`, `but`, and `build`: preserve its strength, name the improvement opportunity, and extend it constructively. A `but` must never be a bare rejection.
+4. Evolve every original, then select the strongest evolution, create a hybrid that traces to at least two distinct originals, and create a novel mutation/third option that is neither selection nor restatement.
+5. Only after evolution, let the reality reviewer check feasibility, evidence, cost, and risk with the existing claim/evidence decision engine.
+6. Recommend the strongest evolved outcome while preserving material uncertainty.
 
-1. The facilitator states the goal, decision, constraints, and success criteria.
-2. Select the minimum roles: proposer for alternatives, adversarial reviewer for risk, fact checker for changeable facts, and decision maker for comparison or recommendation.
-3. Run independent reviews concurrently without sharing another role's conclusion first.
-4. Reopen only disputes likely to change the decision, for at most two rounds.
-5. Stop when material claims are resolved or more work is unlikely to change the outcome. Preserve meaningful disagreement.
+Show only meaningful idea growth in concise, natural Korean. Use the Korean labels `진행자`, `탐험가`, `합성자`, and `현실 검토자`; never show A/B/C identifiers, provider names, internal state, or work logs.
 
-Show the user only decision-relevant content in concise, natural Korean. End with the recommendation, rationale, rejected alternatives, remaining uncertainty, and next action.
-
-Use [meeting rules](references/meeting-rules.md) for modes, roles, and flow, [Korean UI rules](references/korean-ui.md) for visible output, and [decision rules](references/decision-rules.md) for claim handling.
+Use [meeting rules](references/meeting-rules.md) for modes and flow, [Korean UI rules](references/korean-ui.md) for visible output, and [decision rules](references/decision-rules.md) for the final reality check. Validate structured evolution handoffs with `scripts/validate_idea_evolution.py`.

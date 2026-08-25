@@ -27,6 +27,12 @@ class KoreanUiValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "allowed_originals"):
             validate({"messages": [{"text": "문장", "allowed_originals": "제품명"}]})
 
+    def test_rejects_old_role_and_idea_identifiers(self):
+        with self.assertRaisesRegex(ValueError, "idea-evolution role"):
+            validate({"messages": [{"role": "제안자", "text": "새 방향을 제안합니다."}]})
+        self.assertTrue(validate_message("A안은 더 검토하겠습니다."))
+        self.assertTrue(validate_message("A / B / C 중 하나를 고르겠습니다."))
+
 
 if __name__ == "__main__":
     unittest.main()

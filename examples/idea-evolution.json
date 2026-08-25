@@ -1,0 +1,23 @@
+{
+  "ideas": [
+    {"id": "direct", "kind": "original", "text": "Deploy the requested change today."},
+    {"id": "gradual", "kind": "original", "text": "Release to a small audience first."},
+    {"id": "direct-checked", "kind": "evolved", "text": "Deploy today after a rollback check.", "parents": ["direct"]},
+    {"id": "gradual-observed", "kind": "evolved", "text": "Release gradually with an explicit expansion rule.", "parents": ["gradual"]},
+    {"id": "checked-gradual", "kind": "hybrid", "text": "Check rollback, then release gradually.", "parents": ["direct-checked", "gradual-observed"]},
+    {"id": "preview", "kind": "mutation", "text": "Offer a preview path before release.", "parents": ["direct", "gradual"], "novelty": "It gives customers access without selecting either release path."}
+  ],
+  "reviews": [
+    {"idea_id": "direct", "keep": "Fast customer value.", "but": "It needs a verified recovery boundary.", "build": "Add a rollback check before release."},
+    {"idea_id": "gradual", "keep": "Limits initial impact.", "but": "It can delay value without a clear expansion rule.", "build": "Expand only after observing the first cohort."}
+  ],
+  "outputs": [
+    {"kind": "best_evolved_original", "idea_id": "direct-checked"},
+    {"kind": "hybrid", "idea_id": "checked-gradual"},
+    {"kind": "mutation", "idea_id": "preview"}
+  ],
+  "reality_checks": [
+    {"idea_id": "checked-gradual"},
+    {"idea_id": "preview"}
+  ]
+}

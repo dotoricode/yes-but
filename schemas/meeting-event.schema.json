@@ -5,7 +5,7 @@
   "required": ["role", "text"],
   "properties": {
     "role": {
-      "enum": ["진행자", "제안자", "반대 검토자", "사실 확인자", "판단 담당자"]
+      "enum": ["진행자", "탐험가", "합성자", "현실 검토자"]
     },
     "text": { "type": "string", "minLength": 1 },
     "allowed_originals": {

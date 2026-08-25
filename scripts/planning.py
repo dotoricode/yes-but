@@ -3,7 +3,8 @@
 from typing import Any
 
 
-VALID_ROLES = ("제안자", "반대 검토자", "사실 확인자")
+VALID_ROLES = ("탐험가",)
+DEFAULT_ROLES = ("탐험가", "탐험가", "탐험가")
 
 
 def plan_review(request: dict[str, Any]) -> dict[str, Any]:
@@ -17,7 +18,7 @@ def plan_review(request: dict[str, Any]) -> dict[str, Any]:
         name in capabilities and not isinstance(capabilities[name], bool) for name in capability_names
     ):
         raise ValueError("capabilities values must be booleans")
-    roles = request.get("roles", list(VALID_ROLES))
+    roles = request.get("roles", list(DEFAULT_ROLES))
     if not isinstance(roles, list) or any(role not in VALID_ROLES for role in roles):
         raise ValueError("roles must contain supported specialist roles")
     rotation = request.get("rotation", 0)
@@ -33,7 +34,8 @@ def plan_review(request: dict[str, Any]) -> dict[str, Any]:
     result: dict[str, Any] = {
         "requested_mode": mode,
         "facilitator": "current-session",
-        "decision_maker": "current-session",
+        "synthesizer": "current-session",
+        "reality_reviewer": "current-session",
         "review_depth": request.get("review_depth", "standard"),
         "workers": [],
         "can_run_concurrently": False,

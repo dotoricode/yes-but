@@ -1,37 +1,26 @@
-# Meeting Rules
+# Idea Evolution Rules
 
 ## Runtime modes
 
-- Solo is the default. The current session performs every selected role and keeps its active model and reasoning settings.
-- Mix mode requires an explicit user request and confirmed `independent_workers` capability. Keep the current session as facilitator and decision maker; assign independent specialist reviews across available Codex and Claude workers. Rotate provider-to-role assignments between review rounds rather than permanently reserving a role for one provider.
-- Run mixed specialist reviews concurrently only when `parallel` capability is confirmed; otherwise plan sequential work and disclose it. Never infer either capability from provider names or simulate a provider or parallel work.
-- If one provider is unavailable, use the available provider and disclose the lost cross-provider independence. If neither is available, continue in solo mode unless the user requires both.
-- Keep exact model versions unpinned. Express review intent only as `standard` or `deep`; a host adapter may map that intent to its supported settings. User-specified bindings override these defaults.
+- Solo is the default. The current session performs the facilitator, multiple explorers, synthesizer, and reality reviewer roles.
+- Mix mode requires an explicit user request and confirmed `independent_workers` capability. The host may assign available Codex and Claude explorers; rotate provider-to-role assignments each round.
+- Run independent work concurrently only when `parallel` is confirmed. Do not infer capabilities, simulate providers, or add a launcher.
+- If a provider is unavailable, disclose the lost independence and use the supported fallback. If both are required and unavailable, report that the requested mix cannot run.
+- Keep review intent portable: only `standard` or `deep`. Cross-provider execution is host-dependent and unverified.
 
 ## Roles
 
-- Facilitator (`진행자`): narrow the goal and decision, then own the final synthesis.
-- Proposer (`제안자`): produce materially different approaches and expected benefits.
-- Adversarial reviewer (`반대 검토자`): find failure modes, costs, and hidden assumptions.
-- Fact checker (`사실 확인자`): verify only facts that could change the decision.
-- Decision maker (`판단 담당자`): compare evidence and risk, then recommend an option.
-
-Skip every role the request does not need. A simple request may use only the facilitator or no meeting. Omit the proposer when no alternatives are needed, the adversarial reviewer when risk is negligible, and the fact checker when no changeable fact can affect the result.
+- Facilitator (`진행자`): frames the goal, constraints, and success criteria.
+- Explorers (`탐험가`): create three materially distinct originals by default and cross-develop them.
+- Synthesizer (`합성자`): selects evolved originals, creates a multi-idea hybrid, and creates a novel mutation.
+- Reality reviewer (`현실 검토자`): after synthesis only, checks feasibility, evidence, cost, and risk through the claim/evidence engine.
 
 ## Flow
 
-1. State the goal, constraints, success criteria, and current disputes.
-2. Give each role only the goal, constraints, relevant dispute, and new evidence instead of the full transcript.
-3. Run independent proposal, challenge, and verification work concurrently. Merge duplicate claims and research requests.
-4. Separate claims, evidence, objections, and assumptions, then deduplicate them.
-5. Apply the kind-specific decision rules and synthesize the result.
+1. Diverge: generate distinct original ideas.
+2. Yes-But and Build: every original receives non-empty `keep`, `but`, and `build` fields. Keep a concrete strength; make but an improvement opportunity; make build a constructive extension.
+3. Hybridize and Mutate: evolve every original, preserve lineage, combine at least two distinct original roots in the hybrid, and make the mutation a distinct third option with a novelty statement.
+4. Reality Check: assess feasibility, evidence, cost, and risk only after the evolution outputs exist. Use `decide.py` as the final routing mechanism.
+5. Recommend: retain material disagreement and uncertainty rather than manufacturing consensus.
 
-## Host boundary
-
-This skill plans workers but does not launch Codex or Claude. Cross-provider end-to-end execution depends on a host adapter and remains unverified here.
-
-## Reopening and stopping
-
-Reopen only disputes with high decision impact and weak or conflicting evidence. Stop after two rounds, or earlier when no new evidence appears or the result is unlikely to change.
-
-End when material claims have a decision and remaining work cannot change the outcome. Carry unresolved disagreement and uncertainty into the final synthesis.
+Stop after two rounds, or earlier when no meaningful idea growth or decision-changing reality evidence remains.

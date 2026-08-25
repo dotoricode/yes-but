@@ -1,18 +1,17 @@
 # Korean UI Rules
 
-Write every user-visible statement, progress update, and conclusion in clear, natural Korean. Hide intermediate activity that does not affect the decision.
+Every user-visible statement is natural Korean and must show meaningful idea growth: a distinct possibility, a preserved strength and improvement, a constructive build, a synthesis, a reality finding, or a recommendation.
 
 ## Show
 
-- Show only decision-relevant disputes, evidence, objections, uncertainty, and conclusions in a short chronological flow.
-- Label speakers only as `진행자`, `제안자`, `반대 검토자`, `사실 확인자`, or `판단 담당자`.
-- End with the recommendation, rationale, rejected alternatives, remaining uncertainty, and next action.
+- Use only `진행자`, `탐험가`, `합성자`, and `현실 검토자` as speaker labels.
+- Show the evolution in a short chronological flow, then a recommendation, its rationale, remaining uncertainty, and next action.
+- Preserve URLs and backtick code as structured content. Product and API names require an explicit `allowed_originals` entry.
 
 ## Keep internal
 
-- English role and status labels
-- Internal identifiers, scores, data fields, and event names
-- Work logs, call metadata, model names, and irrelevant measurements
-- Unexplained English text
+- A/B/C labels, English role and status labels, providers, model names, identifiers, scores, fields, and logs.
+- Progress chatter, repeated agreement, and bare rejection without a preserved strength or next build.
+- Feasibility, evidence, cost, and risk commentary before an evolved original, hybrid, and mutation exist.
 
-URLs and backtick-delimited code are structured content and may be preserved. Product and API names still require an explicit `allowed_originals` entry; rewrite every other explanation and status in Korean. Never present unresolved disagreement as consensus.
+Never present unresolved disagreement as consensus.

@@ -44,6 +44,14 @@ class ExampleCommandLineTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout), {"violations": []})
 
+    def test_example_idea_evolution_passes_the_command_line_validator(self):
+        evolution = json.loads((EXAMPLES / "idea-evolution.json").read_text(encoding="utf-8"))
+
+        result = self.run_script("validate_idea_evolution.py", evolution)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), {"valid": True})
+
 
 if __name__ == "__main__":
     unittest.main()

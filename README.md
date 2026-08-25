@@ -1,8 +1,20 @@
 # yes-but
 
-`yes-but` is a skill for reaching a clear answer through a short Korean meeting. It opens a meeting only when a request has competing options, meaningful risk, or facts that could change the conclusion.
+`yes-but` is an idea-evolution skill. It turns promising but incomplete alternatives into stronger options before asking whether they are feasible, evidenced, affordable, or safe. The user sees only concise, natural Korean meeting dialogue.
 
-The skill selects only the needed roles, keeps independent review parallel, and shows the user only natural Korean statements that affect the decision. Internal identifiers, statuses, logs, and model names stay out of the visible conversation.
+## How it runs
+
+The pipeline is **Diverge → Yes-But → Build → Hybridize → Mutate → Reality Check → Recommend**.
+
+The facilitator first frames the goal and constraints. Three explorers produce distinct originals by default. Each original receives constructive cross-development with three required fields: `keep` preserves a concrete strength, `but` identifies how that strength can improve rather than rejecting it, and `build` supplies the next development. A synthesizer must return the strongest evolved original, a hybrid whose lineage reaches at least two distinct originals, and a mutation: a genuinely novel third option, not a selection or restatement.
+
+Only then does the reality reviewer check feasibility, evidence, cost, and risk. `scripts/decide.py` remains the final claim/evidence decision engine. `scripts/validate_idea_evolution.py` uses only the standard library to enforce lineage, cross-development fields, and the required output kinds.
+
+Solo mode is the default and uses the current session for facilitator, explorers, synthesizer, and reality reviewer. Mix mode requires an explicit request plus `independent_workers` and available Codex and/or Claude capabilities. Provider-to-role assignments rotate by round; `parallel` controls whether supported independent work can run concurrently. The skill has no provider launcher, so cross-provider execution remains host-dependent and unverified.
+
+## Korean UI
+
+Only meaningful idea growth is visible. The only speaker labels are `진행자`, `탐험가`, `합성자`, and `현실 검토자`. The UI never exposes A/B/C labels, provider names, internal identifiers, statuses, or logs.
 
 ## Install
 
@@ -22,20 +34,9 @@ mkdir -p ~/.claude/skills
 cp -R /path/to/yes-but ~/.claude/skills/yes-but
 ```
 
-Replace `/path/to/yes-but` with the absolute path of this repository. Each command creates an independent directory containing real files at the target path.
-
-## How it runs
-
-The skill first narrows the goal, constraints, and decision points. It then gathers only the required proposals, objections, and fact checks. Claims are assessed by type, important disagreements may be revisited up to twice, and the final response states the recommendation, reason, rejected alternative, remaining uncertainty, and next action.
-
-Solo mode is the default and uses the current session's active agent, model, and reasoning settings. Mix mode requires explicit `independent_workers` capability as well as an available provider; missing capabilities are unavailable. `parallel` controls `can_run_concurrently`, so a valid mix review may run sequentially. Assignments rotate by review round so no provider permanently owns a role. If capability is missing, the skill continues solo unless both providers are required.
-
-Exact model versions are not pinned. The portable skill uses only `standard` and `deep` review intent; host adapters map those intents to supported runtime settings. It does not include a Codex or Claude launcher, so cross-provider end-to-end execution is host-dependent and unverified.
-
-`scripts/decide.py` keeps evidence state (`confirmed`, `refuted`, `unknown`, `conflicting`) separate from decision state. Weak, indirect, stale, or uncorroborated evidence stays `unknown`; only an explicit `evidence_state: "refuted"` is refuted. Proposal feasibility and risk existence are decided by their own criteria, while risk mitigation and blocking impact remain independent. With `changed_ids`, it reassesses each changed claim and all transitive dependents in input order, rejecting unknown dependencies and cycles. The Korean UI validator permits URLs and backtick code while requiring explicit preservation entries for product and API names.
-
 ## Test
 
 ```sh
 python3 -m unittest discover -s tests -v
+python3 scripts/validate_idea_evolution.py < examples/idea-evolution.json
 ```
