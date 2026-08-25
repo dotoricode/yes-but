@@ -31,10 +31,17 @@
         "id": { "type": "string", "minLength": 1 },
         "kind": { "type": "string" },
         "importance": { "enum": ["normal", "important"] },
+        "evidence_state": { "enum": ["confirmed", "refuted", "unknown", "conflicting"] },
         "conflicting_evidence": { "type": "boolean", "default": false },
+        "depends_on": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "default": []
+        },
         "assessment": { "type": "object" }
       },
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "fact": {
       "allOf": [
@@ -91,7 +98,9 @@
                 "manageable": { "$ref": "#/$defs/triState" }
               },
               "additionalProperties": false
-            }
+            },
+            "mitigation_state": { "enum": ["대응 검증됨", "대응 가능", "대응 확인 필요", "대응 어려움"] },
+            "blocking": { "type": "boolean", "default": false }
           }
         }
       ]
