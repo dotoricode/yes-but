@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "User-visible meeting event",
+  "type": "object",
+  "required": ["role", "text"],
+  "properties": {
+    "role": {
+      "enum": ["진행자", "제안자", "반대 검토자", "사실 확인자", "판단 담당자"]
+    },
+    "text": { "type": "string", "minLength": 1 },
+    "allowed_originals": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}
