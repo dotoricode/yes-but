@@ -1,18 +1,18 @@
-# 판단 규칙
+# Decision Rules
 
-판정은 진실을 대신하는 점수가 아니라 다음 확인과 결정을 고르는 기준이다. 새로 생기거나 바뀐 주장만 다시 살피고, 같은 근거와 조사는 확인 시점과 최신성 조건이 맞을 때 재사용한다.
+A decision is a routing result, not a truth score. Reassess only new or changed claims. Reuse evidence when its source, verification time, and freshness requirements still match.
 
-## 주장별 기준
+## Criteria by claim kind
 
-- 사실: 출처가 직접적인지, 최신인지, 다른 근거와 맞는지를 본다.
-- 제안: 제약 안에서 실행 가능한지, 기대 효과가 있는지, 대안보다 나은지를 본다.
-- 위험: 일어날 가능성, 피해 규모, 대응 가능성을 본다.
+- Fact: source directness, freshness, and corroboration.
+- Proposal: feasibility under constraints, expected benefit, and advantage over alternatives.
+- Risk: likelihood, severity, and whether mitigation is available.
 
-## 판단 결과
+## Outcomes
 
-- 채택: 근거가 충분하고 현재 결론을 뒷받침한다.
-- 기각: 근거가 부족하거나 더 강한 반대 근거가 있다.
-- 추가 확인 필요: 결론에 중요하지만 근거가 모자라거나 서로 충돌한다.
-- 이견 유지: 합리적인 근거가 양쪽에 있어 단정할 수 없다.
+- `채택`: evidence is sufficient and supports the current conclusion.
+- `기각`: evidence is insufficient or stronger counterevidence exists.
+- `추가 확인 필요`: the claim matters but evidence is missing or conflicting.
+- `이견 유지`: both sides retain reasonable support.
 
-중요한 영향의 주장에는 약한 근거만으로 결론을 내리지 않는다. 새 사실이나 반론이 결론을 바꿀 수 있을 때만 재검토하며, 결론을 바꾸지 못하는 남은 작업은 중단한다.
+Do not resolve a high-impact claim from weak evidence. Reopen work only when a new fact or objection could change the result, and stop work that cannot affect the conclusion.

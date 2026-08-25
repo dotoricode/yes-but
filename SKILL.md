@@ -1,18 +1,20 @@
 ---
 name: yes-but
-description: 복수의 선택지, 중요한 위험, 사실 확인이 필요한 요청에서 필요한 역할만 모아 짧은 한국어 회의로 결론을 만든다.
+description: Run a short, evidence-aware agent meeting for requests with competing options, material risk, or decision-changing facts. Show the user only natural Korean dialogue.
 ---
 
 # yes-but
 
-다음에만 회의를 연다: 선택지가 여럿이거나, 결론의 위험·불확실성이 크거나, 확인할 사실이 결론을 바꿀 수 있을 때. 단순한 요청은 바로 답한다.
+Open a meeting only when options compete, risk or uncertainty is material, or a fact check could change the decision. Answer simple requests directly.
 
-1. 진행자가 목표, 쟁점, 제약, 성공 조건을 짧게 정리한다.
-2. 요청에 맞춰 최소 역할만 고른다. 대안이 필요하면 제안자, 위험이 있으면 반대 검토자, 바뀔 수 있는 사실이 있으면 사실 확인자, 비교·권고가 필요하면 판단 담당자를 부른다.
-3. 서로 의존하지 않는 검토는 다른 결론을 보지 않은 상태에서 함께 진행한다.
-4. 결론을 바꿀 가능성이 큰 이견만 다시 검토하며, 재검토는 최대 두 번으로 제한한다.
-5. 중요한 주장에 대한 판단이 끝났거나 추가 검토가 결론을 바꾸기 어렵다면 마친다. 이견이 남으면 합의한 것처럼 말하지 않는다.
+Use solo mode by default: the current session performs every selected role without creating workers. Enter mix mode only when the user explicitly asks for mix mode or for Codex and Claude together. In mix mode, keep the current session as facilitator and decision maker, and use available Codex and Claude workers for independent specialist reviews.
 
-사용자에게는 판단에 영향을 준 내용만 자연스럽고 짧은 한국어로 보여준다. 마지막에는 권고안, 이유, 제외한 대안, 남은 불확실성, 다음 행동을 정리한다.
+1. The facilitator states the goal, decision, constraints, and success criteria.
+2. Select the minimum roles: proposer for alternatives, adversarial reviewer for risk, fact checker for changeable facts, and decision maker for comparison or recommendation.
+3. Run independent reviews concurrently without sharing another role's conclusion first.
+4. Reopen only disputes likely to change the decision, for at most two rounds.
+5. Stop when material claims are resolved or more work is unlikely to change the outcome. Preserve meaningful disagreement.
 
-자세한 역할·진행 규칙은 [회의 규칙](references/meeting-rules.md), 표시 규칙은 [한국어 표시 규칙](references/korean-ui.md), 판단 기준은 [판단 규칙](references/decision-rules.md)을 따른다.
+Show the user only decision-relevant content in concise, natural Korean. End with the recommendation, rationale, rejected alternatives, remaining uncertainty, and next action.
+
+Use [meeting rules](references/meeting-rules.md) for modes, roles, and flow, [Korean UI rules](references/korean-ui.md) for visible output, and [decision rules](references/decision-rules.md) for claim handling.
