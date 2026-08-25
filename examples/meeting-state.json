@@ -1,0 +1,32 @@
+{
+  "claims": [
+    {
+      "id": "rollback-confirmed",
+      "kind": "fact",
+      "assessment": {
+        "direct": true,
+        "current": true,
+        "corroborated": true
+      }
+    },
+    {
+      "id": "deploy-today",
+      "kind": "proposal",
+      "assessment": {
+        "feasible": true,
+        "beneficial": true,
+        "preferable": true
+      }
+    },
+    {
+      "id": "rollback-risk",
+      "kind": "risk",
+      "assessment": {
+        "likely": false,
+        "severe": true,
+        "manageable": true
+      }
+    }
+  ]
+}
+
