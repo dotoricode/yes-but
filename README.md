@@ -28,9 +28,12 @@ Replace `/path/to/yes-but` with the absolute path of this repository. Each comma
 
 The skill first narrows the goal, constraints, and decision points. It then gathers only the required proposals, objections, and fact checks. Claims are assessed by type, important disagreements may be revisited up to twice, and the final response states the recommendation, reason, rejected alternative, remaining uncertainty, and next action.
 
+Solo mode is the default and uses the current session's active agent, model, and reasoning effort. Ask for mix mode to keep the current session as facilitator while available Codex and Claude workers perform independent reviews. Mix mode requires a host that exposes both providers; otherwise the skill reports the limitation and continues solo unless both are required.
+
+Exact model versions are not pinned. Mixed workers use each runtime's configured default model, `medium` effort when selectable, and `high` only for unresolved high-impact claims. Explicit user settings take precedence.
+
 ## Test
 
 ```sh
 python3 -m unittest discover -s tests -v
 ```
-
