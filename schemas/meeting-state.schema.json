@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Meeting state",
+  "type": "object",
+  "required": ["claims"],
+  "properties": {
+    "claims": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/claim" }
+    },
+    "changed_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "triState": { "type": ["boolean", "null"] },
+    "claim": {
+      "oneOf": [
+        { "$ref": "#/$defs/fact" },
+        { "$ref": "#/$defs/proposal" },
+        { "$ref": "#/$defs/risk" }
+      ]
+    },
+    "base": {
+      "type": "object",
+      "required": ["id", "kind", "assessment"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string" },
+        "importance": { "enum": ["normal", "important"] },
+        "conflicting_evidence": { "type": "boolean", "default": false },
+        "assessment": { "type": "object" }
+      },
+      "additionalProperties": false
+    },
+    "fact": {
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "properties": {
+            "kind": { "const": "fact" },
+            "assessment": {
+              "type": "object",
+              "required": ["direct", "current", "corroborated"],
+              "properties": {
+                "direct": { "$ref": "#/$defs/triState" },
+                "current": { "$ref": "#/$defs/triState" },
+                "corroborated": { "$ref": "#/$defs/triState" }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "proposal": {
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "properties": {
+            "kind": { "const": "proposal" },
+            "assessment": {
+              "type": "object",
+              "required": ["feasible", "beneficial", "preferable"],
+              "properties": {
+                "feasible": { "$ref": "#/$defs/triState" },
+                "beneficial": { "$ref": "#/$defs/triState" },
+                "preferable": { "$ref": "#/$defs/triState" }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "risk": {
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "properties": {
+            "kind": { "const": "risk" },
+            "assessment": {
+              "type": "object",
+              "required": ["likely", "severe", "manageable"],
+              "properties": {
+                "likely": { "$ref": "#/$defs/triState" },
+                "severe": { "$ref": "#/$defs/triState" },
+                "manageable": { "$ref": "#/$defs/triState" }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    }
+  }
+}
