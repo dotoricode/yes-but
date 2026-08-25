@@ -10,7 +10,7 @@ The facilitator first frames the goal and constraints. Three explorers produce d
 
 Only then does the reality reviewer check feasibility, evidence, cost, and risk. `scripts/decide.py` remains the final claim/evidence decision engine. `scripts/validate_idea_evolution.py` uses only the standard library to enforce lineage, cross-development fields, and the required output kinds.
 
-Solo mode is the default and uses the current session for facilitator, explorers, synthesizer, and reality reviewer. Mix mode requires an explicit request plus `independent_workers` and available Codex and/or Claude capabilities. Provider-to-role assignments rotate by round; `parallel` controls whether supported independent work can run concurrently. The skill has no provider launcher, so cross-provider execution remains host-dependent and unverified.
+Single-provider mode is the default. The current session facilitates and synthesizes while the host creates three isolated explorers from the same provider: Codex in a Codex session or Claude in a Claude session. Mix mode requires an explicit request, independent-worker support, and both providers. The facilitator collects independent originals and then passes each one to another explorer for cross-development. Missing worker support makes the meeting unavailable; the skill never substitutes same-session role-play. Provider execution remains host-dependent.
 
 ## Korean UI
 
