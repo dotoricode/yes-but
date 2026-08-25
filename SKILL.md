@@ -7,7 +7,9 @@ description: Run a short, evidence-aware agent meeting for requests with competi
 
 Open a meeting only when options compete, risk or uncertainty is material, or a fact check could change the decision. Answer simple requests directly.
 
-Use solo mode by default: the current session performs every selected role without creating workers. Enter mix mode only when the user explicitly asks for mix mode or for Codex and Claude together. In mix mode, keep the current session as facilitator and decision maker, and use available Codex and Claude workers for independent specialist reviews.
+Use solo mode by default: the current session performs every selected role without creating workers. Enter mix mode only when the user explicitly asks for it. In mix mode, keep the current session as facilitator and decision maker, use available Codex and Claude workers for independent specialist reviews, and rotate provider-to-role assignments between review rounds. Do not launch providers yourself; host adapters own that boundary.
+
+Express review intent only as `standard` or `deep`, never provider-specific effort names. If a requested mix provider is unavailable, disclose the limitation and use the supported fallback; do not substitute when the user requires both providers.
 
 1. The facilitator states the goal, decision, constraints, and success criteria.
 2. Select the minimum roles: proposer for alternatives, adversarial reviewer for risk, fact checker for changeable facts, and decision maker for comparison or recommendation.

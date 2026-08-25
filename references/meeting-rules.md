@@ -2,11 +2,11 @@
 
 ## Runtime modes
 
-- Solo is the default. The current session performs every selected role and uses its active model and reasoning effort.
-- Mix mode requires an explicit user request. Keep the current session as facilitator and decision maker; assign independent specialist reviews across both Codex and Claude when available.
-- Run mixed specialist reviews concurrently and keep their conclusions isolated until synthesis. Never simulate a provider or parallel work.
-- If either provider is unavailable, disclose that mix mode could not run fully and continue in solo mode unless the user requires both.
-- Keep exact model versions unpinned. Use each runtime's configured default model. When per-worker effort is available, use `medium` by default and `high` only for unresolved high-impact claims. User-specified bindings override these defaults.
+- Solo is the default. The current session performs every selected role and keeps its active model and reasoning settings.
+- Mix mode requires an explicit user request and confirmed `independent_workers` capability. Keep the current session as facilitator and decision maker; assign independent specialist reviews across available Codex and Claude workers. Rotate provider-to-role assignments between review rounds rather than permanently reserving a role for one provider.
+- Run mixed specialist reviews concurrently only when `parallel` capability is confirmed; otherwise plan sequential work and disclose it. Never infer either capability from provider names or simulate a provider or parallel work.
+- If one provider is unavailable, use the available provider and disclose the lost cross-provider independence. If neither is available, continue in solo mode unless the user requires both.
+- Keep exact model versions unpinned. Express review intent only as `standard` or `deep`; a host adapter may map that intent to its supported settings. User-specified bindings override these defaults.
 
 ## Roles
 
@@ -25,6 +25,10 @@ Skip every role the request does not need. A simple request may use only the fac
 3. Run independent proposal, challenge, and verification work concurrently. Merge duplicate claims and research requests.
 4. Separate claims, evidence, objections, and assumptions, then deduplicate them.
 5. Apply the kind-specific decision rules and synthesize the result.
+
+## Host boundary
+
+This skill plans workers but does not launch Codex or Claude. Cross-provider end-to-end execution depends on a host adapter and remains unverified here.
 
 ## Reopening and stopping
 

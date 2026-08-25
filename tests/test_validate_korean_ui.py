@@ -17,6 +17,10 @@ class KoreanUiValidationTests(unittest.TestCase):
         self.assertTrue(validate_message("다음 sprint를 시작합니다."))
         self.assertEqual(validate_message("사용자가 OpenAI API 사용을 요청했습니다.", ["OpenAI API"]), [])
 
+    def test_allows_urls_and_backtick_code_but_requires_explicit_product_preservation(self):
+        self.assertEqual(validate_message("문서는 https://example.com/API 에 있고 `git status`로 확인합니다."), [])
+        self.assertTrue(validate_message("OpenAI API로 확인합니다."))
+
     def test_rejects_invalid_message_shape(self):
         with self.assertRaisesRegex(ValueError, "string"):
             validate({"messages": [{"text": None}]})

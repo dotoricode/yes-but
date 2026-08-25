@@ -15,4 +15,4 @@ Write every user-visible statement, progress update, and conclusion in clear, na
 - Work logs, call metadata, model names, and irrelevant measurements
 - Unexplained English text
 
-Preserve code, product names, or user-provided source text only when quoting them is necessary. Rewrite every other explanation and status in Korean. Never present unresolved disagreement as consensus.
+URLs and backtick-delimited code are structured content and may be preserved. Product and API names still require an explicit `allowed_originals` entry; rewrite every other explanation and status in Korean. Never present unresolved disagreement as consensus.

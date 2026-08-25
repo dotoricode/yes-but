@@ -16,6 +16,8 @@ FORBIDDEN_PATTERNS = {
     "내부 데이터 필드": r"(?<![A-Za-z0-9_])(?:changed_ids|claim_id|assessment|conflicting_evidence|decision)(?![A-Za-z0-9_])",
 }
 ENGLISH = re.compile(r"(?<![A-Za-z0-9_])[A-Za-z][A-Za-z0-9'_-]*(?![A-Za-z0-9_])")
+URL = re.compile(r"https?://[^\s]+", re.IGNORECASE)
+CODE = re.compile(r"`[^`]+`")
 
 
 def _mask_allowed(text: str, allowed_originals: list[str]) -> str:
@@ -27,10 +29,15 @@ def _mask_allowed(text: str, allowed_originals: list[str]) -> str:
     return masked
 
 
+def _mask_structured_content(text: str) -> str:
+    """Keep URLs and backtick code out of prose-only English validation."""
+    return CODE.sub(lambda match: " " * len(match.group(0)), URL.sub(lambda match: " " * len(match.group(0)), text))
+
+
 def validate_message(text: str, allowed_originals: list[str] | None = None) -> list[dict[str, str]]:
     if not isinstance(text, str):
         raise ValueError("message text must be a string")
-    masked = _mask_allowed(text, allowed_originals or [])
+    masked = _mask_structured_content(_mask_allowed(text, allowed_originals or []))
     violations: list[dict[str, str]] = []
     for category, pattern in FORBIDDEN_PATTERNS.items():
         for match in re.finditer(pattern, masked, flags=re.IGNORECASE):
