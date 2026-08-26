@@ -14,8 +14,10 @@ FORBIDDEN_PATTERNS = {
     "시스템 이벤트": r"(?<![A-Za-z0-9_])(?:task_started|task_completed|tool_call|model_response|state_changed)(?![A-Za-z0-9_])",
     "모델명": r"(?<![A-Za-z0-9_])(?:gpt-[A-Za-z0-9_.-]+|claude[-A-Za-z0-9_.]*|gemini[-A-Za-z0-9_.]*)(?![A-Za-z0-9_])",
     "내부 데이터 필드": r"(?<![A-Za-z0-9_])(?:changed_ids|claim_id|assessment|conflicting_evidence|decision)(?![A-Za-z0-9_])",
+    "내부 역할명": r"(?:탐험가|합성자|현실 검토자)\s*:",
 }
-VISIBLE_ROLES = {"진행자", "탐험가", "합성자", "현실 검토자"}
+FACILITATOR = "진행자"
+KOREAN_NAME = re.compile(r"^[가-힣][가-힣 ]{0,19}$")
 ENGLISH = re.compile(r"(?<![A-Za-z0-9_])[A-Za-z][A-Za-z0-9'_-]*(?![A-Za-z0-9_])")
 URL = re.compile(r"https?://[^\s]+", re.IGNORECASE)
 CODE = re.compile(r"`[^`]+`")
@@ -58,12 +60,36 @@ def validate(payload: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
     global_allowed = payload.get("allowed_originals", [])
     if not isinstance(global_allowed, list):
         raise ValueError("allowed_originals must be an array")
+    participants = payload.get("participants")
+    if not isinstance(participants, list):
+        raise ValueError("participants must be an array")
+    if not 3 <= len(participants) <= 6:
+        raise ValueError("participants must contain three to five initial attendees and at most one late attendee")
+    introduced_at: dict[str, int] = {}
+    for participant in participants:
+        if not isinstance(participant, dict) or set(participant) != {"name", "focus", "introduced_at"}:
+            raise ValueError("each participant needs name, focus, and introduced_at")
+        name, focus, joined = participant["name"], participant["focus"], participant["introduced_at"]
+        if not isinstance(name, str) or not KOREAN_NAME.fullmatch(name) or name == FACILITATOR:
+            raise ValueError("participant name must be a natural Korean display name")
+        if name in introduced_at:
+            raise ValueError("participant names must be unique")
+        if not isinstance(joined, int) or isinstance(joined, bool) or not 0 <= joined <= len(messages):
+            raise ValueError("introduced_at must be a valid message index")
+        focus_violations = validate_message(focus, global_allowed)
+        if focus_violations:
+            raise ValueError("participant focus must use natural Korean only")
+        introduced_at[name] = joined
     violations = []
     for index, message in enumerate(messages):
         if not isinstance(message, dict):
             raise ValueError("each message must be an object")
-        if "role" in message and message["role"] not in VISIBLE_ROLES:
-            raise ValueError("message role must be a natural Korean idea-evolution role")
+        if "role" in message:
+            role = message["role"]
+            if role != FACILITATOR and role not in introduced_at:
+                raise ValueError("message role must be the facilitator or an introduced participant")
+            if role in introduced_at and introduced_at[role] > index:
+                raise ValueError("a participant cannot speak before being introduced")
         local_allowed = message.get("allowed_originals", [])
         if not isinstance(local_allowed, list):
             raise ValueError("message allowed_originals must be an array")

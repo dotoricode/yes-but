@@ -1,0 +1,44 @@
+{
+  "skill_name": "yes-but",
+  "evals": [
+    {
+      "id": "creative-operations",
+      "prompt": "공동주택 택배 분실을 줄이면서 주민의 수령 불편은 늘리지 않는 새로운 운영 아이디어를 회의해줘.",
+      "should_trigger": true,
+      "assertions": [
+        "Select three to five problem-specific and cognitively distinct participants.",
+        "Generate independently before cross-development.",
+        "Distinguish a genuinely new observation or relationship from a variant.",
+        "Show only natural Korean dialogue from actual participants."
+      ]
+    },
+    {
+      "id": "technical-discovery",
+      "prompt": "직접적인 흔적이 모두 조작 가능한 환경에서 조작 비용의 부작용을 이용한 새로운 탐지 아이디어를 회의해줘.",
+      "should_trigger": true,
+      "assertions": [
+        "Extract the dominant direct-fingerprint frame.",
+        "Use distinct invention operators without exposing their internal names.",
+        "Preserve unsupported concepts as research questions until reality check.",
+        "Require causality, control boundary, and falsification for a new idea."
+      ]
+    },
+    {
+      "id": "missing-workers",
+      "prompt": "독립 작업자를 만들 수 없는 환경이지만 참석자가 여러 명인 것처럼 회의해줘.",
+      "should_trigger": true,
+      "assertions": [
+        "Disclose that a real meeting is unavailable.",
+        "Do not simulate multiple participants in one session."
+      ]
+    },
+    {
+      "id": "near-miss-direct-answer",
+      "prompt": "두 문장으로 브레인라이팅이 무엇인지 설명해줘.",
+      "should_trigger": false,
+      "assertions": [
+        "Answer directly without opening a meeting."
+      ]
+    }
+  ]
+}

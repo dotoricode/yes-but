@@ -1,10 +1,6 @@
-"""Plan same-provider or mixed independent explorers for a host runtime."""
+"""Plan same-provider or mixed independent thinkers for a host runtime."""
 
 from typing import Any
-
-
-VALID_ROLES = ("탐험가",)
-DEFAULT_ROLES = ("탐험가", "탐험가", "탐험가")
 
 
 def plan_review(request: dict[str, Any]) -> dict[str, Any]:
@@ -21,9 +17,20 @@ def plan_review(request: dict[str, Any]) -> dict[str, Any]:
         name in capabilities and not isinstance(capabilities[name], bool) for name in capability_names
     ):
         raise ValueError("capabilities values must be booleans")
-    roles = request.get("roles", list(DEFAULT_ROLES))
-    if not isinstance(roles, list) or any(role not in VALID_ROLES for role in roles):
-        raise ValueError("roles must contain supported specialist roles")
+    participants = request.get("participants")
+    if not isinstance(participants, list) or not 3 <= len(participants) <= 5:
+        raise ValueError("participants must contain three to five selected thinkers")
+    if any(
+        not isinstance(participant, dict)
+        or set(participant) != {"name", "operator"}
+        or not all(isinstance(participant[field], str) and participant[field].strip() for field in participant)
+        for participant in participants
+    ):
+        raise ValueError("each participant needs a non-empty name and operator")
+    names = [participant["name"] for participant in participants]
+    operators = [participant["operator"] for participant in participants]
+    if len(names) != len(set(names)) or len(operators) != len(set(operators)):
+        raise ValueError("participant names and operators must be distinct")
     rotation = request.get("rotation", 0)
     if not isinstance(rotation, int) or rotation < 0:
         raise ValueError("rotation must be a non-negative integer")
@@ -50,7 +57,10 @@ def plan_review(request: dict[str, Any]) -> dict[str, Any]:
             )
             return result
         result["mode"] = "single-provider"
-        result["workers"] = [{"role": role, "provider": current_provider} for role in roles]
+        result["workers"] = [
+            {"name": participant["name"], "operator": participant["operator"], "provider": current_provider}
+            for participant in participants
+        ]
         result["can_run_concurrently"] = parallel
         if not parallel:
             result["limitations"].append("Parallel execution is unavailable; explorers run sequentially.")
@@ -61,8 +71,12 @@ def plan_review(request: dict[str, Any]) -> dict[str, Any]:
         return result
     result["mode"] = "mix"
     result["workers"] = [
-        {"role": role, "provider": available[(rotation + index) % len(available)]}
-        for index, role in enumerate(roles)
+        {
+            "name": participant["name"],
+            "operator": participant["operator"],
+            "provider": available[(rotation + index) % len(available)],
+        }
+        for index, participant in enumerate(participants)
     ]
     result["can_run_concurrently"] = parallel
     if not parallel:

@@ -49,6 +49,39 @@
         {
           "properties": {
             "kind": { "const": "fact" },
+            "verification": {
+              "type": "object",
+              "required": ["claim_scope", "required_path", "evidence"],
+              "properties": {
+                "claim_scope": {
+                  "type": "object",
+                  "required": ["product", "feature", "plan", "account_context", "checked_at"],
+                  "properties": {
+                    "product": { "type": "string", "minLength": 1 },
+                    "feature": { "type": "string", "minLength": 1 },
+                    "plan": { "type": "string", "minLength": 1 },
+                    "account_context": { "type": "string", "minLength": 1 },
+                    "checked_at": { "type": "string", "minLength": 1 }
+                  },
+                  "additionalProperties": false
+                },
+                "required_path": { "enum": ["published", "account", "operational"] },
+                "evidence": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["path", "source", "scope_matches"],
+                    "properties": {
+                      "path": { "enum": ["published", "account", "operational"] },
+                      "source": { "type": "string", "minLength": 1 },
+                      "scope_matches": { "type": "boolean" }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
             "assessment": {
               "type": "object",
               "required": ["direct", "current", "corroborated"],

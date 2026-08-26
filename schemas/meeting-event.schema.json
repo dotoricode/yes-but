@@ -5,7 +5,8 @@
   "required": ["role", "text"],
   "properties": {
     "role": {
-      "enum": ["진행자", "탐험가", "합성자", "현실 검토자"]
+      "type": "string",
+      "minLength": 1
     },
     "text": { "type": "string", "minLength": 1 },
     "allowed_originals": {

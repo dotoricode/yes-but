@@ -38,6 +38,86 @@ class DecideTests(unittest.TestCase):
         self.assertEqual(result["decision_state"], "pending")
         self.assertEqual(result["decision"], "추가 확인 필요")
 
+    def test_repeated_agents_do_not_turn_one_source_into_corroboration(self):
+        claim = {
+            "id": "free-mcp",
+            "kind": "fact",
+            "assessment": {"direct": True, "current": True, "corroborated": True},
+            "verification": {
+                "claim_scope": {
+                    "product": "InspoAI",
+                    "feature": "MCP access",
+                    "plan": "free",
+                    "account_context": "signed-in user",
+                    "checked_at": "2026-08-25",
+                },
+                "required_path": "account",
+                "evidence": [
+                    {"path": "published", "source": "same-page", "scope_matches": True},
+                    {"path": "published", "source": "same-page", "scope_matches": True},
+                    {"path": "published", "source": "same-page", "scope_matches": True},
+                ],
+            },
+        }
+        self.assertEqual(decide_claim(claim)["decision"], "추가 확인 필요")
+
+    def test_important_fact_cannot_skip_structured_verification(self):
+        claim = {
+            "id": "current-access",
+            "kind": "fact",
+            "importance": "important",
+            "assessment": {"direct": True, "current": True, "corroborated": True},
+        }
+        self.assertEqual(decide_claim(claim)["decision"], "추가 확인 필요")
+
+    def test_operational_claim_requires_a_matching_operational_result(self):
+        claim = {
+            "id": "mcp-available",
+            "kind": "fact",
+            "assessment": {"direct": True, "current": True, "corroborated": True},
+            "verification": {
+                "claim_scope": {
+                    "product": "InspoAI",
+                    "feature": "MCP call",
+                    "plan": "free",
+                    "account_context": "signed-in user",
+                    "checked_at": "2026-08-25",
+                },
+                "required_path": "operational",
+                "evidence": [
+                    {"path": "published", "source": "official-doc", "scope_matches": True},
+                    {"path": "account", "source": "account-screen", "scope_matches": True},
+                ],
+            },
+        }
+        self.assertEqual(decide_claim(claim)["decision"], "추가 확인 필요")
+        claim["verification"]["evidence"].append(
+            {"path": "operational", "source": "successful-call", "scope_matches": True}
+        )
+        self.assertEqual(decide_claim(claim)["decision"], "채택")
+
+    def test_mismatched_ui_price_does_not_prove_mcp_price(self):
+        claim = {
+            "id": "mcp-price",
+            "kind": "fact",
+            "assessment": {"direct": True, "current": True, "corroborated": True},
+            "verification": {
+                "claim_scope": {
+                    "product": "InspoAI",
+                    "feature": "MCP access",
+                    "plan": "free",
+                    "account_context": "signed-in user",
+                    "checked_at": "2026-08-25",
+                },
+                "required_path": "account",
+                "evidence": [
+                    {"path": "published", "source": "mcp-page", "scope_matches": True},
+                    {"path": "account", "source": "ui-generation-price", "scope_matches": False},
+                ],
+            },
+        }
+        self.assertEqual(decide_claim(claim)["decision"], "추가 확인 필요")
+
     def test_explicitly_refuted_fact_is_refuted_and_excluded(self):
         result = decide_claim({
             "id": "f",
