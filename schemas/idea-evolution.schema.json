@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Multi-lens idea evolution handoff",
+  "type": "object",
+  "required": ["dominant_frame", "participants", "ideas", "reviews", "outputs", "plateau", "reality_checks"],
+  "$defs": {
+    "novelty": {
+      "type": "object",
+      "required": ["observation_axis", "relationship", "causal_model", "control_boundary", "falsifier", "irreducibility"],
+      "properties": {
+        "observation_axis": {"type": "string", "minLength": 1},
+        "relationship": {"type": "string", "minLength": 1},
+        "causal_model": {"type": "string", "minLength": 1},
+        "control_boundary": {"type": "string", "minLength": 1},
+        "falsifier": {"type": "string", "minLength": 1},
+        "irreducibility": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "dominant_frame": {"type": "string", "minLength": 1},
+    "participants": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["name", "operator", "joined"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1},
+          "operator": {"type": "string", "minLength": 1},
+          "joined": {"enum": ["initial", "plateau"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "ideas": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "text", "operator", "producer"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "kind": {"enum": ["original", "evolved", "hybrid", "mutation"]},
+          "text": {"type": "string", "minLength": 1},
+          "operator": {"type": "string", "minLength": 1},
+          "producer": {"type": "string", "minLength": 1},
+          "parents": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "classification": {"enum": ["variant", "new_idea"]},
+          "collision_reason": {"type": "string", "minLength": 1},
+          "novelty": {"$ref": "#/$defs/novelty"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "reviews": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["idea_id", "from_operator", "to_operator", "reviewer", "keep", "but", "build"],
+        "properties": {
+          "idea_id": {"type": "string", "minLength": 1},
+          "from_operator": {"type": "string", "minLength": 1},
+          "to_operator": {"type": "string", "minLength": 1},
+          "reviewer": {"type": "string", "minLength": 1},
+          "keep": {"type": "string", "minLength": 1},
+          "but": {"type": "string", "minLength": 1},
+          "build": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["kind", "idea_id"],
+        "properties": {
+          "kind": {"enum": ["best_evolved_original", "hybrid", "mutation"]},
+          "idea_id": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "plateau": {
+      "oneOf": [
+        {"type": "object", "required": ["detected"], "properties": {"detected": {"const": false}}, "additionalProperties": false},
+        {"type": "object", "required": ["detected", "reason", "summoned_participant"], "properties": {"detected": {"const": true}, "reason": {"type": "string", "minLength": 1}, "summoned_participant": {"type": "string", "minLength": 1}}, "additionalProperties": false}
+      ]
+    },
+    "reality_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["idea_id", "feasibility", "evidence", "cost", "causality", "control_boundary", "risk", "falsifier", "decision"],
+        "properties": {
+          "idea_id": {"type": "string", "minLength": 1},
+          "feasibility": {"type": "string", "minLength": 1},
+          "evidence": {"type": "string", "minLength": 1},
+          "cost": {"type": "string", "minLength": 1},
+          "causality": {"type": "string", "minLength": 1},
+          "control_boundary": {"type": "string", "minLength": 1},
+          "risk": {"type": "string", "minLength": 1},
+          "falsifier": {"type": "string", "minLength": 1},
+          "decision": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

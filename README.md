@@ -1,8 +1,22 @@
 # yes-but
 
-`yes-but` is a skill for reaching a clear answer through a short Korean meeting. It opens a meeting only when a request has competing options, meaningful risk, or facts that could change the conclusion.
+`yes-but` is a multi-lens idea-evolution skill. It sends one problem through different invention operators, cross-develops the results, and deliberately creates options that were absent at the start. The user sees only concise, natural Korean meeting dialogue.
 
-The skill selects only the needed roles, keeps independent review parallel, and shows the user only natural Korean statements that affect the decision. Internal identifiers, statuses, logs, and model names stay out of the visible conversation.
+## How it runs
+
+The pipeline is **Frame → Select → Brainwrite → Lens Swap → Collide → Mutate → Reality Check → Recommend**.
+
+The facilitator first extracts the goal, constraints, and dominant frame. It selects three to five semantically distant operators from the hidden idea warehouse and assigns each one to an isolated worker. Workers brainwrite without seeing peer outputs. Every original then passes through a different operator with three required fields: `keep` preserves a concrete strength, `but` identifies limited potential, and `build` supplies the next development. The two most distant evolved ideas collide into a hybrid. If the pool plateaus, one previously absent operator joins for a mutation round.
+
+Only then does the current session check feasibility, evidence, cost, causality, control boundaries, risk, and falsification. `scripts/decide.py` remains the final claim/evidence decision engine. `scripts/validate_idea_evolution.py` enforces the dominant frame, recorded workers, operator swaps, lineage, collision rationale, novelty gates, plateau records, and complete reality findings. `scripts/validate_meeting.py` proves that the execution record and visible transcript agree; host-native agent results remain the authority for whether isolated workers actually ran.
+
+Single-provider mode is the default. The current session facilitates and synthesizes while the host creates isolated workers from the same provider: Codex in a Codex session or Claude in a Claude session. Mix mode requires an explicit request, independent-worker support, and both providers. Missing worker support makes the meeting unavailable; the skill never substitutes same-session role-play. Provider execution remains host-dependent.
+
+## Korean UI
+
+Only meaningful idea growth is visible. Character names are derived from the selected operator, such as `뒤집기 대장`, `연결 장인`, or `가설 탐정`; there is no fixed cast. The opening introduces only actual participants. A late participant appears under `추가 참석` immediately before speaking. The candidate pool, method names, A/B/C labels, provider names, identifiers, statuses, and logs never appear in the UI.
+
+For changeable facts, the skill separates published claims, account-visible conditions, and operational results. Repetition of one source does not become corroboration. The skill can also route to installed Matt Pocock model-invoked skills for primary-source research, runnable prototypes, architecture vocabulary, and implementation feedback; user-invoked orchestrators are only suggested, never called silently.
 
 ## Install
 
@@ -22,20 +36,11 @@ mkdir -p ~/.claude/skills
 cp -R /path/to/yes-but ~/.claude/skills/yes-but
 ```
 
-Replace `/path/to/yes-but` with the absolute path of this repository. Each command creates an independent directory containing real files at the target path.
-
-## How it runs
-
-The skill first narrows the goal, constraints, and decision points. It then gathers only the required proposals, objections, and fact checks. Claims are assessed by type, important disagreements may be revisited up to twice, and the final response states the recommendation, reason, rejected alternative, remaining uncertainty, and next action.
-
-Solo mode is the default and uses the current session's active agent, model, and reasoning settings. Mix mode requires explicit `independent_workers` capability as well as an available provider; missing capabilities are unavailable. `parallel` controls `can_run_concurrently`, so a valid mix review may run sequentially. Assignments rotate by review round so no provider permanently owns a role. If capability is missing, the skill continues solo unless both providers are required.
-
-Exact model versions are not pinned. The portable skill uses only `standard` and `deep` review intent; host adapters map those intents to supported runtime settings. It does not include a Codex or Claude launcher, so cross-provider end-to-end execution is host-dependent and unverified.
-
-`scripts/decide.py` keeps evidence state (`confirmed`, `refuted`, `unknown`, `conflicting`) separate from decision state. Weak, indirect, stale, or uncorroborated evidence stays `unknown`; only an explicit `evidence_state: "refuted"` is refuted. Proposal feasibility and risk existence are decided by their own criteria, while risk mitigation and blocking impact remain independent. With `changed_ids`, it reassesses each changed claim and all transitive dependents in input order, rejecting unknown dependencies and cycles. The Korean UI validator permits URLs and backtick code while requiring explicit preservation entries for product and API names.
-
 ## Test
 
 ```sh
 python3 -m unittest discover -s tests -v
+python3 scripts/validate_idea_evolution.py < examples/idea-evolution.json
+python3 scripts/validate_korean_ui.py < examples/meeting-ui.json
+python3 scripts/validate_meeting.py examples/idea-evolution.json examples/meeting-ui.json
 ```

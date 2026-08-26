@@ -16,6 +16,47 @@ MITIGATION_FROM_MANAGEABLE = {True: "대응 가능", False: "대응 어려움", 
 
 
 EVIDENCE_STATES = ("confirmed", "refuted", "unknown", "conflicting")
+EVIDENCE_PATHS = ("published", "account", "operational")
+
+
+def _verified_fact_values(claim: dict[str, Any], values: list[bool | None]) -> list[bool | None]:
+    """Replace self-reported corroboration with scoped, deduplicated evidence when supplied."""
+    verification = claim.get("verification")
+    if verification is None:
+        if claim.get("importance") == "important":
+            return [values[0], values[1], False]
+        return values
+    if not isinstance(verification, dict):
+        raise ValueError("verification must be an object")
+    scope = verification.get("claim_scope")
+    required_scope = ("product", "feature", "plan", "account_context", "checked_at")
+    if not isinstance(scope, dict) or any(not isinstance(scope.get(name), str) or not scope[name] for name in required_scope):
+        raise ValueError("claim_scope must identify product, feature, plan, account_context, and checked_at")
+    required_path = verification.get("required_path")
+    if required_path not in EVIDENCE_PATHS:
+        raise ValueError("required_path must be published, account, or operational")
+    evidence = verification.get("evidence")
+    if not isinstance(evidence, list):
+        raise ValueError("verification evidence must be an array")
+
+    qualified: set[tuple[str, str]] = set()
+    for item in evidence:
+        if not isinstance(item, dict):
+            raise ValueError("each verification evidence item must be an object")
+        path = item.get("path")
+        source = item.get("source")
+        scope_matches = item.get("scope_matches")
+        if path not in EVIDENCE_PATHS:
+            raise ValueError("evidence path must be published, account, or operational")
+        if not isinstance(source, str) or not source:
+            raise ValueError("evidence source must be a non-empty string")
+        if not isinstance(scope_matches, bool):
+            raise ValueError("evidence scope_matches must be a boolean")
+        if scope_matches:
+            qualified.add((path, source))
+
+    available_paths = {path for path, _ in qualified}
+    return [values[0], values[1], len(qualified) >= 2 and required_path in available_paths]
 
 
 def _evidence_state(claim: dict[str, Any], values: list[bool | None]) -> str:
@@ -91,6 +132,8 @@ def decide_claim(claim: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("assessment criteria must be true, false, or null")
 
     evidence_values = [assessment[name] for name in (RISK_EXISTENCE_CRITERIA if kind == "risk" else criteria)]
+    if kind == "fact":
+        evidence_values = _verified_fact_values(claim, evidence_values)
     evidence_state = _evidence_state(claim, evidence_values)
     decision_state = _decision_for(kind, evidence_state, assessment)
     result = {

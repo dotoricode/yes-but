@@ -1,0 +1,35 @@
+{
+  "dominant_frame": "A release must choose between immediate speed and gradual safety.",
+  "participants": [
+    {"name": "모순 해결사", "operator": "contradiction-hunt", "joined": "initial"},
+    {"name": "뒤집기 대장", "operator": "lateral-escape", "joined": "initial"},
+    {"name": "연결 장인", "operator": "analogy-transfer", "joined": "initial"},
+    {"name": "대가 회계사", "operator": "causal-residue", "joined": "plateau"}
+  ],
+  "ideas": [
+    {"id": "direct", "kind": "original", "text": "Deploy the requested change today.", "operator": "contradiction-hunt", "producer": "모순 해결사"},
+    {"id": "gradual", "kind": "original", "text": "Release to a small audience first.", "operator": "lateral-escape", "producer": "뒤집기 대장"},
+    {"id": "premiere", "kind": "original", "text": "Run a production-like customer premiere before release.", "operator": "analogy-transfer", "producer": "연결 장인"},
+    {"id": "direct-checked", "kind": "evolved", "text": "Deploy today after a rollback check.", "operator": "lateral-escape", "producer": "뒤집기 대장", "parents": ["direct"], "classification": "variant"},
+    {"id": "gradual-observed", "kind": "evolved", "text": "Release gradually with an explicit expansion rule.", "operator": "analogy-transfer", "producer": "연결 장인", "parents": ["gradual"], "classification": "variant"},
+    {"id": "premiere-recovered", "kind": "evolved", "text": "Use the real release path for the premiere and verify recovery first.", "operator": "contradiction-hunt", "producer": "모순 해결사", "parents": ["premiere"], "classification": "variant"},
+    {"id": "checked-gradual", "kind": "hybrid", "text": "Check rollback, then release through the real path to a selected audience.", "operator": "idea-collision", "producer": "facilitator", "parents": ["direct-checked", "gradual-observed"], "classification": "variant", "collision_reason": "The first optimizes time while the second limits exposure."},
+    {"id": "same-path-preview", "kind": "mutation", "text": "Offer preview access through the existing production path without a separate environment.", "operator": "causal-residue", "producer": "대가 회계사", "parents": ["checked-gradual", "premiere-recovered"], "classification": "new_idea", "novelty": {"observation_axis": "Operational cost created by a separate preview environment.", "relationship": "Links customer preview access to the existing production path.", "causal_model": "Reusing the path removes environment drift while audience controls limit exposure.", "control_boundary": "The team controls audience selection but not final customer behavior.", "falsifier": "Discard it if the production path cannot isolate the selected audience.", "irreducibility": "It changes the delivery boundary rather than choosing an immediate or gradual release schedule."}}
+  ],
+  "reviews": [
+    {"idea_id": "direct", "from_operator": "contradiction-hunt", "to_operator": "lateral-escape", "reviewer": "뒤집기 대장", "keep": "Fast customer value.", "but": "It needs a verified recovery boundary.", "build": "Add a rollback check before release."},
+    {"idea_id": "gradual", "from_operator": "lateral-escape", "to_operator": "analogy-transfer", "reviewer": "연결 장인", "keep": "Limits initial impact.", "but": "It can delay value without a clear expansion rule.", "build": "Expand only after observing the first cohort."},
+    {"idea_id": "premiere", "from_operator": "analogy-transfer", "to_operator": "contradiction-hunt", "reviewer": "모순 해결사", "keep": "Customers see the experience before broad release.", "but": "A separate environment can hide production failures.", "build": "Use the real release path and verify recovery first."}
+  ],
+  "outputs": [
+    {"kind": "best_evolved_original", "idea_id": "premiere-recovered"},
+    {"kind": "hybrid", "idea_id": "checked-gradual"},
+    {"kind": "mutation", "idea_id": "same-path-preview"}
+  ],
+  "plateau": {"detected": true, "reason": "All evolved ideas still depended on a separate preview or staged-release frame.", "summoned_participant": "대가 회계사"},
+  "reality_checks": [
+    {"idea_id": "premiere-recovered", "feasibility": "Requires an audience control on the real release path.", "evidence": "The rollback path is documented but audience isolation is unverified.", "cost": "Uses the existing release path with limited setup work.", "causality": "Real-path exposure reveals failures hidden by a separate preview environment.", "control_boundary": "The team controls audience selection and rollback, not customer behavior.", "risk": "A targeting error could expose the change broadly.", "falsifier": "Reject if the release path cannot isolate and restore the selected audience.", "decision": "Keep pending an isolation test."},
+    {"idea_id": "checked-gradual", "feasibility": "Feasible when staged targeting and rollback are both available.", "evidence": "Rollback is known; staged targeting remains unverified.", "cost": "Adds monitoring and staged expansion work.", "causality": "Smaller initial exposure limits the impact of a release defect.", "control_boundary": "The team controls cohort size but not defect occurrence.", "risk": "Weak expansion criteria can delay value or widen exposure too early.", "falsifier": "Reject if cohort boundaries cannot be enforced.", "decision": "Test targeting before selection."},
+    {"idea_id": "same-path-preview", "feasibility": "Depends on selective access in the current production path.", "evidence": "No operational result yet proves selective access.", "cost": "Avoids a separate environment but adds access controls.", "causality": "Reusing the path reduces environment drift while access controls limit exposure.", "control_boundary": "The team controls access rules but not all downstream integrations.", "risk": "Shared-path errors may affect unintended customers.", "falsifier": "Reject if access rules leak in a controlled test.", "decision": "Most promising after an access-isolation experiment."}
+  ]
+}
