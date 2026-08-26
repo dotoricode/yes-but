@@ -15,7 +15,7 @@ class KoreanUiValidationTests(unittest.TestCase):
         }
 
     def test_allows_natural_korean_message(self):
-        result = validate(self.payload([{"text": "근거가 부족하므로 추가 확인이 필요합니다."}]))
+        result = validate(self.payload([{"role": "진행자", "text": "근거가 부족하므로 추가 확인이 필요합니다."}]))
         self.assertEqual(result["violations"], [])
 
     def test_reports_each_forbidden_display_item(self):
@@ -33,9 +33,9 @@ class KoreanUiValidationTests(unittest.TestCase):
 
     def test_rejects_invalid_message_shape(self):
         with self.assertRaisesRegex(ValueError, "string"):
-            validate(self.payload([{"text": None}]))
+            validate(self.payload([{"role": "진행자", "text": None}]))
         with self.assertRaisesRegex(ValueError, "allowed_originals"):
-            validate(self.payload([{"text": "문장", "allowed_originals": "제품명"}]))
+            validate(self.payload([{"role": "진행자", "text": "문장", "allowed_originals": "제품명"}]))
 
     def test_rejects_unintroduced_role_and_idea_identifiers(self):
         with self.assertRaisesRegex(ValueError, "introduced participant"):
@@ -62,6 +62,7 @@ class KoreanUiValidationTests(unittest.TestCase):
             "participants": [
                 {"name": "뒤집기 대장", "focus": "전제 뒤집기", "introduced_at": 0},
                 {"name": "연결 장인", "focus": "다른 분야 연결하기", "introduced_at": 0},
+                {"name": "가설 탐정", "focus": "원인 추리하기", "introduced_at": 0},
                 {"name": "대가 회계사", "focus": "숨긴 대가 추적하기", "introduced_at": 2},
             ],
             "messages": [
@@ -73,9 +74,30 @@ class KoreanUiValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "before being introduced"):
             validate(payload)
 
+    def test_late_introduction_requires_name_focus_and_immediate_turn(self):
+        payload = {
+            "participants": [
+                {"name": "뒤집기 대장", "focus": "전제 뒤집기", "introduced_at": 0},
+                {"name": "연결 장인", "focus": "다른 분야 연결하기", "introduced_at": 0},
+                {"name": "가설 탐정", "focus": "원인 추리하기", "introduced_at": 0},
+                {"name": "대가 회계사", "focus": "숨긴 대가 추적하기", "introduced_at": 1},
+            ],
+            "messages": [
+                {"role": "진행자", "text": "회의가 한 관점에 머물고 있습니다."},
+                {"role": "진행자", "text": "추가 참석: 대가 회계사가 함께합니다."},
+                {"role": "대가 회계사", "text": "숨긴 비용을 살펴보겠습니다."},
+            ],
+        }
+        with self.assertRaisesRegex(ValueError, "name and focus"):
+            validate(payload)
+
     def test_requires_an_actual_participant_roster(self):
         with self.assertRaisesRegex(ValueError, "participants"):
             validate({"messages": [{"role": "진행자", "text": "회의를 시작합니다."}]})
+
+    def test_requires_each_message_to_name_its_speaker(self):
+        with self.assertRaisesRegex(ValueError, "attributed role"):
+            validate(self.payload([{"text": "누가 말했는지 알 수 없습니다."}]))
 
     def test_rejects_internal_role_labels_in_visible_text(self):
         categories = {item["category"] for item in validate_message("탐험가: 새 방향을 제안합니다.")}

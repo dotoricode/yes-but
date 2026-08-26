@@ -39,6 +39,20 @@ class IdeaEvolutionValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "must not restate"):
             validate(payload)
 
+    def test_plateau_mutation_may_honestly_remain_a_variant(self):
+        payload = copy.deepcopy(self.payload)
+        mutation = next(idea for idea in payload["ideas"] if idea["kind"] == "mutation")
+        mutation["classification"] = "variant"
+        mutation.pop("novelty")
+        self.assertEqual(validate(payload), {"valid": True})
+
+    def test_lens_swap_may_create_a_genuinely_new_idea(self):
+        payload = copy.deepcopy(self.payload)
+        evolved = next(idea for idea in payload["ideas"] if idea["id"] == "direct-checked")
+        evolved["classification"] = "new_idea"
+        evolved["novelty"] = copy.deepcopy(next(idea for idea in payload["ideas"] if idea["kind"] == "mutation")["novelty"])
+        self.assertEqual(validate(payload), {"valid": True})
+
         payload = copy.deepcopy(self.payload)
         payload["ideas"][-1]["text"] = "Deploy the requested change today!"
         with self.assertRaisesRegex(ValueError, "must not restate"):
@@ -107,6 +121,13 @@ class IdeaEvolutionValidationTests(unittest.TestCase):
 
     def test_reality_checks_only_target_completed_evolution_outputs(self):
         payload = copy.deepcopy(self.payload)
-        payload["reality_checks"] = [{"idea_id": "direct"}]
+        payload["reality_checks"] = [copy.deepcopy(payload["reality_checks"][0])]
+        payload["reality_checks"][0]["idea_id"] = "direct"
         with self.assertRaisesRegex(ValueError, "only follow"):
+            validate(payload)
+
+    def test_reality_checks_require_substantive_quality_findings(self):
+        payload = copy.deepcopy(self.payload)
+        payload["reality_checks"][0]["evidence"] = ""
+        with self.assertRaisesRegex(ValueError, "non-empty"):
             validate(payload)

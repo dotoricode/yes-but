@@ -96,12 +96,10 @@ def validate(payload: dict[str, Any]) -> dict[str, bool]:
         classification = idea.get("classification")
         if kind == "original" and classification is not None:
             _error("original ideas are not classified before development")
-        if kind == "evolved" and classification != "variant":
-            _error("evolved ideas must be classified as variants")
+        if kind == "evolved" and classification not in {"variant", "new_idea"}:
+            _error("evolved ideas require a novelty classification")
         if kind in {"hybrid", "mutation"} and classification not in {"variant", "new_idea"}:
             _error("hybrid and mutation ideas require a novelty classification")
-        if kind == "mutation" and classification != "new_idea":
-            _error("mutation ideas must be classified as new ideas")
         if kind == "hybrid" and not isinstance(idea.get("collision_reason"), str):
             _error("hybrid ideas require a collision reason")
         if kind == "hybrid" and not idea["collision_reason"].strip():
@@ -205,8 +203,8 @@ def validate(payload: dict[str, Any]) -> dict[str, bool]:
     if plateau["detected"]:
         mutation = by_id[selected["mutation"]]
         summoned = plateau["summoned_participant"]
-        if mutation["kind"] != "mutation" or mutation.get("classification") != "new_idea" or mutation["producer"] != summoned:
-            _error("a plateau mutation must be a new idea from the summoned participant")
+        if mutation["kind"] != "mutation" or mutation["producer"] != summoned:
+            _error("a plateau mutation must come from the summoned participant")
         normalize = lambda text: re.sub(r"[\W_]+", "", text, flags=re.UNICODE).casefold()
         mutation_text = normalize(mutation["text"])
         if any(
@@ -216,12 +214,25 @@ def validate(payload: dict[str, Any]) -> dict[str, bool]:
             _error("mutation must not restate an existing idea")
 
     output_idea_ids = set(selected.values())
+    reality_fields = {
+        "idea_id",
+        "feasibility",
+        "evidence",
+        "cost",
+        "causality",
+        "control_boundary",
+        "risk",
+        "falsifier",
+        "decision",
+    }
     checked_ids: set[str] = set()
     for check in reality_checks:
-        if not isinstance(check, dict) or set(check) != {"idea_id"}:
-            _error("each reality check must contain only an idea_id")
+        if not isinstance(check, dict) or set(check) != reality_fields:
+            _error("each reality check must record all required quality fields")
         if check["idea_id"] not in output_idea_ids:
             _error("reality checks can only follow the required evolution outputs")
+        if not all(isinstance(check[field], str) and check[field].strip() for field in reality_fields - {"idea_id"}):
+            _error("reality check findings must be non-empty strings")
         checked_ids.add(check["idea_id"])
     if checked_ids != output_idea_ids or len(reality_checks) != len(output_idea_ids):
         _error("each selected output requires exactly one reality check")

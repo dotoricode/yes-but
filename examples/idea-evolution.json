@@ -28,8 +28,8 @@
   ],
   "plateau": {"detected": true, "reason": "All evolved ideas still depended on a separate preview or staged-release frame.", "summoned_participant": "대가 회계사"},
   "reality_checks": [
-    {"idea_id": "premiere-recovered"},
-    {"idea_id": "checked-gradual"},
-    {"idea_id": "same-path-preview"}
+    {"idea_id": "premiere-recovered", "feasibility": "Requires an audience control on the real release path.", "evidence": "The rollback path is documented but audience isolation is unverified.", "cost": "Uses the existing release path with limited setup work.", "causality": "Real-path exposure reveals failures hidden by a separate preview environment.", "control_boundary": "The team controls audience selection and rollback, not customer behavior.", "risk": "A targeting error could expose the change broadly.", "falsifier": "Reject if the release path cannot isolate and restore the selected audience.", "decision": "Keep pending an isolation test."},
+    {"idea_id": "checked-gradual", "feasibility": "Feasible when staged targeting and rollback are both available.", "evidence": "Rollback is known; staged targeting remains unverified.", "cost": "Adds monitoring and staged expansion work.", "causality": "Smaller initial exposure limits the impact of a release defect.", "control_boundary": "The team controls cohort size but not defect occurrence.", "risk": "Weak expansion criteria can delay value or widen exposure too early.", "falsifier": "Reject if cohort boundaries cannot be enforced.", "decision": "Test targeting before selection."},
+    {"idea_id": "same-path-preview", "feasibility": "Depends on selective access in the current production path.", "evidence": "No operational result yet proves selective access.", "cost": "Avoids a separate environment but adds access controls.", "causality": "Reusing the path reduces environment drift while access controls limit exposure.", "control_boundary": "The team controls access rules but not all downstream integrations.", "risk": "Shared-path errors may affect unintended customers.", "falsifier": "Reject if access rules leak in a controlled test.", "decision": "Most promising after an access-isolation experiment."}
   ]
 }

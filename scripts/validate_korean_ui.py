@@ -74,28 +74,48 @@ def validate(payload: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
             raise ValueError("participant name must be a natural Korean display name")
         if name in introduced_at:
             raise ValueError("participant names must be unique")
-        if not isinstance(joined, int) or isinstance(joined, bool) or not 0 <= joined <= len(messages):
+        if not isinstance(joined, int) or isinstance(joined, bool) or not 0 <= joined < len(messages):
             raise ValueError("introduced_at must be a valid message index")
         focus_violations = validate_message(focus, global_allowed)
         if focus_violations:
             raise ValueError("participant focus must use natural Korean only")
         introduced_at[name] = joined
+    initial_count = sum(joined == 0 for joined in introduced_at.values())
+    late_count = len(introduced_at) - initial_count
+    if not 3 <= initial_count <= 5 or late_count > 1:
+        raise ValueError("meetings need three to five initial attendees and at most one late attendee")
     violations = []
     for index, message in enumerate(messages):
         if not isinstance(message, dict):
             raise ValueError("each message must be an object")
-        if "role" in message:
-            role = message["role"]
-            if role != FACILITATOR and role not in introduced_at:
-                raise ValueError("message role must be the facilitator or an introduced participant")
-            if role in introduced_at and introduced_at[role] > index:
-                raise ValueError("a participant cannot speak before being introduced")
+        if "role" not in message:
+            raise ValueError("each meeting message requires an attributed role")
+        role = message["role"]
+        if role != FACILITATOR and role not in introduced_at:
+            raise ValueError("message role must be the facilitator or an introduced participant")
+        if role in introduced_at and introduced_at[role] >= index:
+            raise ValueError("a participant cannot speak before being introduced")
         local_allowed = message.get("allowed_originals", [])
         if not isinstance(local_allowed, list):
             raise ValueError("message allowed_originals must be an array")
         allowed = global_allowed + local_allowed
         found = validate_message(message.get("text"), allowed)
         violations.extend({"index": index, **item} for item in found)
+    for name, joined in introduced_at.items():
+        if joined == 0:
+            continue
+        introduction = messages[joined].get("text", "")
+        focus = next(participant["focus"] for participant in participants if participant["name"] == name)
+        if (
+            messages[joined].get("role") != FACILITATOR
+            or "추가 참석" not in introduction
+            or name not in introduction
+            or focus not in introduction
+        ):
+            raise ValueError("a late participant needs a facilitator introduction with name and focus")
+        first_turn = next((index for index, message in enumerate(messages) if message.get("role") == name), None)
+        if first_turn != joined + 1:
+            raise ValueError("a late participant must speak immediately after introduction")
     return {"violations": violations}
 
 

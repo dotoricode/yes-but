@@ -6,7 +6,7 @@ Read it before participant selection and again only if the idea pool plateaus. S
 
 ## Operators
 
-- [Foundational operators](thinking-operators.md): contradiction, lateral escape, analogy transfer, morphological combination, transformation, concept-knowledge expansion, and abductive hypothesis.
+- [Foundational operators](thinking-operators.md): contradiction, lateral escape, analogy transfer, morphological combination, transformation, concept-knowledge expansion, abductive hypothesis, observation shift, temporal shift, boundary shift, and second-order effects.
 - [Capability Inversion](idea-patterns/capability-inversion.md): infer what a genuine instance should naturally be able to do, then inspect missing or inconsistent capability relationships.
 - [Causal Residue](idea-patterns/causal-residue.md): when direct evidence is hidden or manipulable, infer the work required to produce the clean surface and look for its cost through an independent observer and a relational contradiction.
 

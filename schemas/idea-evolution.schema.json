@@ -94,7 +94,22 @@
     },
     "reality_checks": {
       "type": "array",
-      "items": {"type": "object", "required": ["idea_id"], "properties": {"idea_id": {"type": "string", "minLength": 1}}, "additionalProperties": false}
+      "items": {
+        "type": "object",
+        "required": ["idea_id", "feasibility", "evidence", "cost", "causality", "control_boundary", "risk", "falsifier", "decision"],
+        "properties": {
+          "idea_id": {"type": "string", "minLength": 1},
+          "feasibility": {"type": "string", "minLength": 1},
+          "evidence": {"type": "string", "minLength": 1},
+          "cost": {"type": "string", "minLength": 1},
+          "causality": {"type": "string", "minLength": 1},
+          "control_boundary": {"type": "string", "minLength": 1},
+          "risk": {"type": "string", "minLength": 1},
+          "falsifier": {"type": "string", "minLength": 1},
+          "decision": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
     }
   },
   "additionalProperties": false
